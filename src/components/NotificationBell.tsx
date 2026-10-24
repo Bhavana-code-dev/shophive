@@ -118,7 +118,12 @@ export function NotificationBell() {
       </button>
 
       {open && (
-        <div className="fade-in absolute right-0 top-full z-30 mt-2 max-h-[75vh] w-[min(24rem,92vw)] overflow-y-auto rounded-lg border border-slate-200 bg-white text-ink shadow-xl">
+        <div
+        className="
+      fixed inset-x-2 top-[4.5rem] z-50 max-h-[calc(100dvh-5.5rem)] overflow-y-auto
+      rounded-xl border border-slate-200 bg-white shadow-lg
+      sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 sm:max-h-[28rem]
+    ">
           <h2 className="border-b border-slate-200 px-4 py-3 font-extrabold">Offers for you</h2>
           <ul className="divide-y divide-slate-100">
             {OFFERS.map((o) => (
