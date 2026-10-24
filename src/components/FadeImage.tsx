@@ -1,6 +1,5 @@
 import { useState, type ImgHTMLAttributes } from 'react'
 
-/** An <img> that fades in once it has loaded, instead of popping in. */
 export function FadeImage({ className = '', ...props }: ImgHTMLAttributes<HTMLImageElement>) {
   const [loaded, setLoaded] = useState(false)
   return (

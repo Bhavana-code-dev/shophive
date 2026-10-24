@@ -18,15 +18,12 @@ export function PriceRange({ min, max, step = 1, value, onChange }: Props) {
       </div>
 
       <div className="relative h-5">
-        {/* grey line */}
         <div className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 rounded-full bg-slate-300" />
-        {/* selected part (navy) */}
         <div
           className="absolute top-1/2 h-1 -translate-y-1/2 rounded-full bg-navy"
           style={{ left: `${pct(lo)}%`, right: `${100 - pct(hi)}%` }}
         />
 
-        {/* min dot */}
         <input
           type="range"
           aria-label="Minimum price"
@@ -38,7 +35,6 @@ export function PriceRange({ min, max, step = 1, value, onChange }: Props) {
           className="price-range-input"
           style={{ zIndex: lo > max - (max - min) / 10 ? 5 : 3 }}
         />
-        {/* max dot */}
         <input
           type="range"
           aria-label="Maximum price"

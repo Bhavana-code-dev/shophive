@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react'
 import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStore } from '../context/store'
 import { useDebounce } from '../hooks/useDebounce'
@@ -8,9 +8,6 @@ import { MenuIcon } from './Icons'
 import { Logo } from './Logo'
 import { NotificationBell } from './NotificationBell'
 
-/* ---------- Voice search helpers ---------- */
-
-// The Web Speech API isn't in TypeScript's built-in DOM types, so describe the bits we use.
 interface SpeechRecognitionResultLike {
   isFinal: boolean
   0: { transcript: string }
@@ -80,7 +77,6 @@ function SearchIcon() {
   )
 }
 
-/* ---------- Search bar ---------- */
 const SEARCH_WORDS = ['Beauty', 'Fragrances', 'Furniture', 'Groceries', 'Home Decoration', 'Kitchen Accessories', 'Watches']
 function SearchBar() {
   const [params] = useSearchParams()
@@ -96,11 +92,9 @@ function SearchBar() {
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null)
   const debounced = useDebounce(value, 300)
 
-  // Hide the mic entirely on browsers without speech recognition (e.g. Firefox).
   const voiceSupported = typeof window !== 'undefined' && getSpeechRecognition() !== null
   const [wordIndex, setWordIndex] = useState(0)
 
-  // Rotate the category word only while the box is empty and idle.
   useEffect(() => {
     if (value || listening) return undefined
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined
@@ -108,7 +102,6 @@ function SearchBar() {
     return () => window.clearInterval(id)
   }, [value, listening])
   
-  // Keep the box in sync when the URL changes elsewhere (e.g. "Clear all").
   useEffect(() => {
     setValue(urlQ)
   }, [urlQ])
@@ -118,17 +111,14 @@ function SearchBar() {
     else if (q.trim()) navigate(`/?q=${encodeURIComponent(q.trim())}`)
   }
 
-  // Live search once the user pauses typing.
   useEffect(() => {
     if (debounced !== value || debounced.trim() === urlQ.trim()) return
     apply(debounced)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounced])
 
-  // Stop the microphone if the header unmounts mid-recording.
   useEffect(() => () => recognitionRef.current?.abort(), [])
 
-  const submit = (e: FormEvent) => {
+  const submit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     apply(value)
   }
@@ -145,8 +135,8 @@ function SearchBar() {
 
     const rec = new Ctor()
     rec.lang = navigator.language || 'en-US'
-    rec.interimResults = true // show words as they are spoken
-    rec.continuous = false // stop automatically after a pause
+    rec.interimResults = true 
+    rec.continuous = false
 
     let finalText = ''
 
@@ -161,7 +151,6 @@ function SearchBar() {
     }
 
     rec.onerror = (e) => {
-      // 'aborted' just means we stopped it ourselves.
       if (e.error === 'aborted') return
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         notify('Microphone access is blocked. Allow it in your browser settings to use voice search.')
@@ -187,7 +176,6 @@ function SearchBar() {
       rec.start()
       setListening(true)
     } catch {
-      // start() throws if a session is already running
       setListening(false)
     }
   }
@@ -246,8 +234,6 @@ function SearchBar() {
     </form>
   )
 }
-
-/* ---------- Header ---------- */
 
 export function Header({ onMenuClick }: { onMenuClick: () => void }) {
   const { pathname } = useLocation()

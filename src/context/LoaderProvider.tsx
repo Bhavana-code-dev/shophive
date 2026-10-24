@@ -19,7 +19,6 @@ export function LoaderProvider({ children }: { children: ReactNode }) {
       setVisible(true)
 
       const minimum = new Promise((resolve) => window.setTimeout(resolve, MIN_VISIBLE_MS))
-      // A failed prefetch is fine: the product page shows its own error state with a retry button.
       Promise.all([minimum, prefetch?.catch(() => undefined)]).then(() => {
         navigate(to, options)
         setLeaving(true)

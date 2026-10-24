@@ -14,7 +14,6 @@ interface Props {
   onChange: (value: SortKey) => void
 }
 
-/** Styled replacement for <select>, with full keyboard support (arrows, Home/End, Enter, Esc). */
 export function SortSelect({ value, onChange }: Props) {
   const [open, setOpen] = useState(false)
   const [active, setActive] = useState(0)
@@ -22,7 +21,6 @@ export function SortSelect({ value, onChange }: Props) {
   const listId = useId()
   const selectedIndex = Math.max(0, OPTIONS.findIndex((o) => o.value === value))
 
-  // Close when clicking anywhere outside.
   useEffect(() => {
     if (!open) return undefined
     const onDown = (e: MouseEvent) => {

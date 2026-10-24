@@ -13,7 +13,6 @@ import { formatPrice, paginate } from '../lib/filterProducts'
 import type { Product } from '../types'
 
 const REVIEWS_PER_PAGE = 3
-// const SPIN_MS = 2400 // keep in sync with .spin-y in index.css
 const titleCase = (s: string) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 
 function Gallery({ product }: { product: Product }) {
@@ -108,7 +107,6 @@ function RelatedProducts({ category, currentId }: { category: string; currentId:
     [category, currentId],
   )
 
-  // Suggestions are a bonus, so hide the section if it fails or comes back empty
   if (error || (!loading && (!data || data.length === 0))) return null
 
   return (
@@ -168,17 +166,14 @@ export default function DetailPage() {
     }
   }, [product])
 
-  // Came from the listing? Step back in history so the exact filtered view
-  // (URL query + scroll position) is restored. Deep link? Go to the listing.
+ 
   const goBack = () => (location.state?.fromListing ? navigate(-1) : navigate('/'))
 
   // const buyNow = () => {
   //   if (!product) return
   //   addToCart(product)
-  //   notify('Added to cart. Checkout isn’t part of this demo.')
   // }
 
-  // Phones get the native share sheet; desktops copy the link (a predictable result).
   const share = async () => {
     if (!product) return
     const url = window.location.href

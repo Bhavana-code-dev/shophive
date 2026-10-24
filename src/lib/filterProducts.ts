@@ -4,14 +4,12 @@ export const PAGE_SIZE = 12
 
 type Criteria = Pick<Filters, 'min' | 'max' | 'brands' | 'q' | 'sort'>
 
-/** Unique, alphabetically sorted brands. Products without a brand are skipped. */
 export function getBrands(products: ProductSummary[]): string[] {
   const set = new Set<string>()
   for (const p of products) if (p.brand) set.add(p.brand)
   return [...set].sort((a, b) => a.localeCompare(b))
 }
 
-/** Pure + combined: every active criterion must match (AND), then sort. */
 export function applyFilters(products: ProductSummary[], { min, max, brands, q, sort }: Criteria): ProductSummary[] {
   const query = q.trim().toLowerCase()
   const result = products.filter((p) => {

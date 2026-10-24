@@ -5,7 +5,6 @@ export interface Review {
   reviewerName: string
 }
 
-/** Lightweight shape used by the listing page (fetched with `select`). */
 export interface ProductSummary {
   id: number
   title: string

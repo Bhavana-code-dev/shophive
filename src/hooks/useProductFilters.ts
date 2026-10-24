@@ -10,11 +10,6 @@ const toPrice = (v: string | null) => {
   return Number.isFinite(n) && n >= 0 ? n : null
 }
 
-/**
- * Single source of truth for filters = the URL query string.
- * Benefits: shareable links, refresh-safe, and "Back" from a product page
- * returns to the exact same filtered/paginated view with zero extra code.
- */
 export function useProductFilters() {
   const [params, setParams] = useSearchParams()
 
@@ -32,7 +27,6 @@ export function useProductFilters() {
     }
   }, [params])
 
-  /** Any change except `page` itself resets pagination to page 1. */
   const update = useCallback(
     (patch: Partial<Filters>) => {
       setParams(
@@ -54,7 +48,6 @@ export function useProductFilters() {
           else next.delete('page')
           return next
         },
-        // replace: filter tweaks don't pollute history, so Back leaves the page in one click.
         { replace: true },
       )
     },

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type SyntheticEvent } from 'react'
 import type { Category, Filters } from '../types'
 
 interface Props {
@@ -18,7 +18,7 @@ function PriceRange({ min, max, onApply }: { min: number | null; max: number | n
   const [hi, setHi] = useState(max === null ? '' : String(max))
   const [error, setError] = useState('')
 
-  const submit = (e: FormEvent) => {
+  const submit = (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
     const a = lo.trim() === '' ? null : Number(lo)
     const b = hi.trim() === '' ? null : Number(hi)

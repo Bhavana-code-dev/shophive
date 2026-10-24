@@ -12,7 +12,6 @@ interface Offer {
   code: string
 }
 
-// Sample content for the demo. Swap these for real offers (or an API) later.
 const OFFERS: Offer[] = [
   {
     id: 'diwali',
@@ -64,7 +63,6 @@ export function NotificationBell() {
   const [seen, setSeen] = useState(readSeen)
   const wrapper = useRef<HTMLDivElement>(null)
 
-  // Close when clicking elsewhere or pressing Escape.
   useEffect(() => {
     if (!open) return undefined
     const onDown = (e: MouseEvent) => {
@@ -88,7 +86,6 @@ export function NotificationBell() {
       try {
         localStorage.setItem(SEEN_KEY, '1')
       } catch {
-        // Storage blocked: the badge simply comes back next visit.
       }
     }
   }
@@ -149,9 +146,6 @@ export function NotificationBell() {
               </li>
             ))}
           </ul>
-          {/* <p className="border-t border-slate-200 px-4 py-3 text-xs text-slate-500">
-            Sample offers for this demo. Codes aren’t applied at checkout.
-          </p> */}
         </div>
       )}
     </div>

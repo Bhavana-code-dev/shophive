@@ -14,16 +14,13 @@ export function ProductCard({ product }: { product: ProductSummary }) {
   const { isWished, toggleWishlist } = useStore()
   const wished = isWished(product.id)
 
-  // Show the logo loader, prefetch the product, then open the detail page.
   const open = (e: MouseEvent<HTMLAnchorElement>) => {
-    // Let the browser handle ctrl/cmd-click (new tab) and other modified clicks normally.
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
     e.preventDefault()
     go(`/product/${product.id}`, { state: { fromListing: true } }, fetchProduct(product.id))
   }
 
   return (
-    // The heart is a sibling of the link (a button can't live inside a link).
     <div className="relative h-full overflow-hidden rounded-lg border border-slate-200 bg-white transition duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:shadow-md">
       <Link to={`/product/${product.id}`} state={{ fromListing: true }} onClick={open} className="flex h-full flex-col">
         <div className="aspect-square bg-slate-50 p-4">

@@ -26,12 +26,10 @@ export default function App() {
   const hideSplash = useCallback(() => setShowSplash(false), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
 
-  // The drawer belongs to the listing page: close it whenever we leave that page.
   useEffect(() => {
     if (pathname !== '/') setSidebarOpen(false)
   }, [pathname])
 
-  // On other pages the menu button takes you to the listing with the filters open.
   const onMenuClick = () => {
     if (pathname === '/') {
       setSidebarOpen((open) => !open)

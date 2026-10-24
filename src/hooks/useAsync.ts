@@ -6,11 +6,6 @@ interface AsyncState<T> {
   error: string | null
 }
 
-/**
- * Runs `load` whenever `deps` change. Ignores stale responses (fast filter
- * changes can never overwrite newer results) and exposes `retry`.
- * `peek` optionally returns already-fetched data so the first render is instant.
- */
 export function useAsync<T>(load: () => Promise<T>, deps: unknown[], peek?: () => T | undefined) {
   const [state, setState] = useState<AsyncState<T>>(() => {
     const cached = peek?.()
@@ -34,7 +29,6 @@ export function useAsync<T>(load: () => Promise<T>, deps: unknown[], peek?: () =
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, attempt])
 
   const retry = useCallback(() => setAttempt((n) => n + 1), [])

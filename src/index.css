@@ -27,7 +27,6 @@ body {
   animation: fade-in 220ms ease-out both;
 }
 
-/* Overlays (product loader) fade in; the fade-out is a CSS transition on the element. */
 @keyframes fade-only {
   from { opacity: 0; }
 }
@@ -35,7 +34,6 @@ body {
   animation: fade-only 200ms ease-out backwards;
 }
 
-/* Splash screen: logo pops in, tagline rises, a progress bar fills, then the screen fades away. */
 @keyframes splash-pop {
   from { opacity: 0; transform: scale(0.6); }
   to { opacity: 1; transform: none; }
@@ -56,7 +54,6 @@ body {
 .splash-bar span { animation: splash-bar 2200ms ease-in-out both; }
 .splash-out { animation: splash-out 600ms ease-in forwards; }
 
-/* 360 degree turntable spin on the product detail image (slow and smooth). */
 @keyframes spin-y {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(360deg); }

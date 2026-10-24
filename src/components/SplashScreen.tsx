@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 const SHOW_MS = 2300
 const TOTAL_MS = 2900
 
-/** Full-screen intro: logo pops in, tagline fades up, then the whole screen fades away. */
 export function SplashScreen({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false)
 

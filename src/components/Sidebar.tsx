@@ -11,7 +11,6 @@ interface Props {
 
 }
 
-/** Slide-in drawer from the left. Closes on backdrop click, the X button, or Escape. */
 export function Sidebar({ open, onClose, activeCount, onClear,children }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null)
 

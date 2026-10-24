@@ -171,7 +171,6 @@ export function HeaderActions() {
           {open === 'user' && (
             <div className="p-4">
               <p className="font-extrabold">Hello, Guest</p>
-              {/* <p className="mt-1 text-sm text-slate-600">Sign-in and accounts aren’t part of this demo.</p> */}
             </div>
           )}
         </div>

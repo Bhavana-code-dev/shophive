@@ -25,7 +25,6 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
   )
 }
 
-/** Simple pager: previous chevron, the current page number, next chevron. */
 export function Pagination({ page, totalPages, onChange }: Props) {
   if (totalPages <= 1) return null
   return (

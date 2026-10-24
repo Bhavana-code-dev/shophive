@@ -1,20 +1,12 @@
 import { getJson } from './client'
 import type { Category, Product, ProductSummary } from '../types'
 
-/**
- * Only request the fields the listing needs. `limit=0` returns the whole
- * catalogue in one request, so filtering/pagination can be instant and
- * combined filters stay trivially correct (the API cannot filter by price or brand).
- */
 const LIST_FIELDS = 'title,price,rating,thumbnail,brand,category,discountPercentage'
 
-// Promise caches dedupe in-flight requests. A failed request is evicted so "Retry" really retries.
 const listCache = new Map<string, Promise<ProductSummary[]>>()
 const detailCache = new Map<number, Promise<Product>>()
 let categoriesCache: Promise<Category[]> | null = null
 
-// Resolved values, readable synchronously: screens render instantly when data
-// was already fetched (no skeleton flash on Back).
 const listData = new Map<string, ProductSummary[]>()
 const detailData = new Map<number, Product>()
 let categoriesData: Category[] | undefined
@@ -78,7 +70,6 @@ export async function fetchRelatedProducts(
   excludeId: number,
   limit = 4,
 ): Promise<ProductSummary[]> {
-  // Fetch one extra so we still have `limit` items after removing the current product
   const res = await fetch(
     `https://dummyjson.com/products/category/${encodeURIComponent(category)}?limit=${limit + 1}`,
   )

@@ -15,7 +15,6 @@ function load(): { wishlist: ProductSummary[]; cart: CartItem[] } {
       }
     }
   } catch {
-    // Storage blocked or corrupt: start with empty lists.
   }
   return { wishlist: [], cart: [] }
 }
