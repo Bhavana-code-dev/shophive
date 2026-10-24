@@ -72,3 +72,17 @@ export function fetchCategories(): Promise<Category[]> {
   }
   return categoriesCache
 }
+
+export async function fetchRelatedProducts(
+  category: string,
+  excludeId: number,
+  limit = 4,
+): Promise<ProductSummary[]> {
+  // Fetch one extra so we still have `limit` items after removing the current product
+  const res = await fetch(
+    `https://dummyjson.com/products/category/${encodeURIComponent(category)}?limit=${limit + 1}`,
+  )
+  if (!res.ok) throw new Error('Could not load related products')
+  const data = await res.json()
+  return (data.products as ProductSummary[]).filter((p) => p.id !== excludeId).slice(0, limit)
+}

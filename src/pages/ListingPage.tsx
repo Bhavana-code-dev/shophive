@@ -8,7 +8,8 @@ import { StateMessage } from '../components/StateMessage'
 import { useAsync } from '../hooks/useAsync'
 import { useProductFilters } from '../hooks/useProductFilters'
 import { applyFilters, getBrands, PAGE_SIZE, paginate } from '../lib/filterProducts'
-import type { SortKey } from '../types'
+import { SortSelect } from '../components/SortSelect'
+import { CategoryChips } from '../components/CategoryChips'
 
 interface Props {
   sidebarOpen: boolean
@@ -37,9 +38,17 @@ export default function ListingPage({ sidebarOpen, onCloseSidebar }: Props) {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const allProducts = useAsync(() => fetchProducts(''), [], () => peekProducts(''))
+  const categoryImages = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const p of allProducts.data ?? []) {
+      if (!map[p.category]) map[p.category] = p.thumbnail
+    }
+    return map
+  }, [allProducts.data])
   return (
     <>
-      <Sidebar open={sidebarOpen} onClose={onCloseSidebar}>
+      <Sidebar open={sidebarOpen} onClose={onCloseSidebar} activeCount={activeCount} onClear={clearAll}>
         <FilterPanel
           categories={categories}
           filters={filters}
@@ -52,7 +61,7 @@ export default function ListingPage({ sidebarOpen, onCloseSidebar }: Props) {
       </Sidebar>
 
       <main className="fade-in mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+        <div className="mb-4 flex flex-wrap items-end gap-x-6 gap-y-3">
           <div>
             <h1 className="text-2xl font-extrabold">{filters.q ? `Results for “${filters.q}”` : heading}</h1>
             <p className="text-sm text-slate-600" aria-live="polite">
@@ -68,19 +77,20 @@ export default function ListingPage({ sidebarOpen, onCloseSidebar }: Props) {
               )}
             </p>
           </div>
-          <label className="flex items-center gap-2 text-sm">
-            <span className="sr-only sm:not-sr-only">Sort by</span>
-            <select
-              value={filters.sort}
-              onChange={(e) => update({ sort: e.target.value as SortKey })}
-              className="rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-sm"
-            >
-              <option value="">Featured</option>
-              <option value="price-asc">Price: low to high</option>
-              <option value="price-desc">Price: high to low</option>
-              <option value="rating">Top rated</option>
-            </select>
-          </label>
+
+          <div className="order-last w-full min-w-0 lg:order-none lg:mr-6 lg:w-auto lg:flex-1">
+            <CategoryChips
+              categories={categories.data ?? []}
+              images={categoryImages}
+              selected={filters.category}
+              loading={categories.loading}
+              onSelect={(slug) => update({ category: slug, brands: [] })}
+            />
+          </div>
+          <div className="ml-auto flex items-center gap-2 text-sm">
+            <span className="hidden sm:inline">Sort by</span>
+            <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} />
+          </div>
         </div>
 
         <section aria-label="Products">

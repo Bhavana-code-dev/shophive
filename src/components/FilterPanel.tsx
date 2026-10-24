@@ -34,12 +34,49 @@ function PriceRange({ min, max, onApply }: { min: number | null; max: number | n
     <form onSubmit={submit} noValidate>
       <fieldset>
         <legend className="mb-2 text-sm font-bold">Price range</legend>
+
         <div className="flex gap-2">
-          <input aria-label="Minimum price" inputMode="decimal" placeholder="Min" value={lo} onChange={(e) => setLo(e.target.value)} className={inputCls} />
-          <input aria-label="Maximum price" inputMode="decimal" placeholder="Max" value={hi} onChange={(e) => setHi(e.target.value)} className={inputCls} />
+          <input
+            type="text"
+            aria-label="Minimum price"
+            inputMode="decimal"
+            placeholder="Min"
+            value={lo}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setLo(value);
+              }
+            }}
+            className={`${inputCls} text-right placeholder:text-left`}
+          />
+
+          <input
+            type="text"
+            aria-label="Maximum price"
+            inputMode="decimal"
+            placeholder="Max"
+            value={hi}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setHi(value);
+              }
+            }}
+            className={`${inputCls} text-right placeholder:text-left`}
+          />
         </div>
-        {error && <p role="alert" className="mt-1.5 text-xs text-red-700">{error}</p>}
-        <button type="submit" className="mt-2 w-full rounded-md bg-brand py-1.5 text-sm font-semibold text-white hover:bg-blue-700">
+
+        {error && (
+          <p role="alert" className="mt-1.5 text-xs text-red-700">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          className="mt-2 w-full rounded-md bg-navy py-1.5 text-sm font-semibold text-white transition hover:brightness-125 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-navy"
+        >
           Apply
         </button>
       </fieldset>
@@ -47,21 +84,47 @@ function PriceRange({ min, max, onApply }: { min: number | null; max: number | n
   )
 }
 
-export function FilterPanel({ categories, filters, brands, brandsLoading, activeCount, onChange, onClear }: Props) {
+export function ClearFiltersButton({ count, onClear }: { count: number; onClear: () => void }) {
+  if (count === 0) return null
+
+  return (
+    <button
+      type="button"
+      onClick={onClear}
+      title="Clear all filters"
+      aria-label={`Clear all filters (${count} active)`}
+      className="relative rounded-md p-1.5 text-white/90 hover:bg-white/10 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+    >
+      {/* filter-with-X icon */}
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+           strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M13.5 21v-7.5L21 4H3l7.5 9.5V19l3 2" />
+        <path d="m16 16 5 5M21 16l-5 5" />
+      </svg>
+
+      {/* active count badge */}
+      <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-blue-500 px-1 text-[10px] font-bold leading-none text-white">
+        {count}
+      </span>
+    </button>
+  )
+}
+
+export function FilterPanel({ categories, filters, brands, brandsLoading, onChange }: Props) {
   const brandOptions = [...new Set([...brands, ...filters.brands])].sort((a, b) => a.localeCompare(b))
   const toggleBrand = (b: string) =>
     onChange({ brands: filters.brands.includes(b) ? filters.brands.filter((x) => x !== b) : [...filters.brands, b] })
 
   return (
     <div className="space-y-6 rounded-lg border border-slate-200 bg-white p-4">
-      <div className="flex items-center justify-between">
+      {/* <div className="flex items-center justify-between">
         <h2 className="font-extrabold">Filters</h2>
         {activeCount > 0 && (
           <button onClick={onClear} className="text-sm font-semibold text-brand hover:underline">
             Clear all
           </button>
         )}
-      </div>
+      </div> */}
 
       <fieldset>
         <legend className="mb-2 text-sm font-bold">Category</legend>
@@ -73,7 +136,7 @@ export function FilterPanel({ categories, filters, brands, brandsLoading, active
         ) : categories.loading ? (
           <p className="text-sm text-slate-500">Loading categories…</p>
         ) : (
-          <ul className="max-h-56 space-y-1 overflow-y-auto pr-1">
+          <ul className="max-h-48 space-y-1 overflow-y-auto pr-1">
             {[{ slug: '', name: 'All categories' }, ...(categories.data ?? [])].map((c) => (
               <li key={c.slug || 'all'}>
                 <label className="flex cursor-pointer items-center gap-2 py-0.5 text-sm">
@@ -82,7 +145,7 @@ export function FilterPanel({ categories, filters, brands, brandsLoading, active
                     name="category"
                     checked={filters.category === c.slug}
                     onChange={() => onChange({ category: c.slug, brands: [] })}
-                    className="accent-blue-600"
+                    className="accent-navy"
                   />
                   {c.name}
                 </label>
@@ -101,11 +164,11 @@ export function FilterPanel({ categories, filters, brands, brandsLoading, active
         ) : brandOptions.length === 0 ? (
           <p className="text-sm text-slate-500">No brands for this category.</p>
         ) : (
-          <ul className="max-h-56 space-y-1 overflow-y-auto pr-1">
+          <ul className="max-h-48 space-y-1 overflow-y-auto pr-1">
             {brandOptions.map((b) => (
               <li key={b}>
                 <label className="flex cursor-pointer items-center gap-2 py-0.5 text-sm">
-                  <input type="checkbox" checked={filters.brands.includes(b)} onChange={() => toggleBrand(b)} className="accent-blue-600" />
+                  <input type="checkbox" checked={filters.brands.includes(b)} onChange={() => toggleBrand(b)} className="accent-navy" />
                   {b}
                 </label>
               </li>

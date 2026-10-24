@@ -161,7 +161,7 @@ export function HeaderActions() {
                       <span>Total</span>
                       <span>{formatPrice(cartTotal)}</span>
                     </p>
-                    <p className="mt-1 text-xs text-slate-500">Checkout isn’t part of this demo.</p>
+                    {/* <p className="mt-1 text-xs text-slate-500">Checkout isn’t part of this demo.</p> */}
                   </div>
                 </>
               )}

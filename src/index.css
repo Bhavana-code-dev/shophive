@@ -68,3 +68,13 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * { animation: none !important; transition: none !important; }
 }
+
+@keyframes word-in {
+  from { transform: translateY(70%); opacity: 0; }
+  to   { transform: translateY(0);   opacity: 1; }
+}
+.word-in { animation: word-in 400ms ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .word-in { animation: none; }
+}

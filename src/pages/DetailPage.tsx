@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { fetchProduct, peekProduct } from '../api/products'
+import { fetchProduct, fetchRelatedProducts, peekProduct } from '../api/products'
 import { FadeImage } from '../components/FadeImage'
-import { HeartIcon, RotateIcon, ShareIcon } from '../components/Icons'
+import { HeartIcon, ShareIcon } from '../components/Icons'
 import { Pagination } from '../components/Pagination'
+import { ProductCard } from '../components/ProductCard'
 import { Rating } from '../components/Rating'
 import { StateMessage } from '../components/StateMessage'
 import { useStore } from '../context/store'
@@ -12,7 +13,7 @@ import { formatPrice, paginate } from '../lib/filterProducts'
 import type { Product } from '../types'
 
 const REVIEWS_PER_PAGE = 3
-const SPIN_MS = 2400 // keep in sync with .spin-y in index.css
+// const SPIN_MS = 2400 // keep in sync with .spin-y in index.css
 const titleCase = (s: string) => s.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 
 function Gallery({ product }: { product: Product }) {
@@ -23,11 +24,11 @@ function Gallery({ product }: { product: Product }) {
 
   useEffect(() => () => window.clearTimeout(timer.current), [])
 
-  const rotate = () => {
-    if (spinning) return
-    setSpinning(true)
-    timer.current = window.setTimeout(() => setSpinning(false), SPIN_MS)
-  }
+  // const rotate = () => {
+  //   if (spinning) return
+  //   setSpinning(true)
+  //   timer.current = window.setTimeout(() => setSpinning(false), SPIN_MS)
+  // }
 
   const select = (i: number) => {
     window.clearTimeout(timer.current)
@@ -44,16 +45,16 @@ function Gallery({ product }: { product: Product }) {
           alt={product.title}
           className={`h-full w-full object-contain ${spinning ? 'spin-y' : ''}`}
         />
-        <button
+        {/* <button
           type="button"
           onClick={rotate}
           disabled={spinning}
           aria-label="Rotate product 360 degrees"
           className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 shadow-sm transition-colors hover:text-brand disabled:opacity-60"
-        >
-          <RotateIcon width={16} height={16} />
-          360°
-        </button>
+        > */}
+          {/* <RotateIcon width={16} height={16} />
+          360° */}
+        {/* </button> */}
       </div>
       {images.length > 1 && (
         <ul className="mt-3 flex flex-wrap gap-2">
@@ -101,6 +102,40 @@ function Reviews({ product }: { product: Product }) {
   )
 }
 
+function RelatedProducts({ category, currentId }: { category: string; currentId: number }) {
+  const { data, loading, error } = useAsync(
+    () => fetchRelatedProducts(category, currentId),
+    [category, currentId],
+  )
+
+  // Suggestions are a bonus, so hide the section if it fails or comes back empty
+  if (error || (!loading && (!data || data.length === 0))) return null
+
+  return (
+    <section className="mt-12" aria-labelledby="related-heading">
+      <h2 id="related-heading" className="mb-3 text-xl font-extrabold">
+        You might also like
+      </h2>
+
+      {loading ? (
+        <div className="grid animate-pulse grid-cols-2 gap-4 md:grid-cols-4" aria-busy="true" aria-label="Loading suggestions">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="aspect-[3/4] rounded-lg bg-slate-200" />
+          ))}
+        </div>
+      ) : (
+        <ul className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {data!.map((p) => (
+            <li key={p.id}>
+              <ProductCard product={p} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
+}
+
 function DetailSkeleton() {
   return (
     <div className="grid animate-pulse gap-8 md:grid-cols-2" aria-busy="true" aria-label="Loading product">
@@ -137,11 +172,11 @@ export default function DetailPage() {
   // (URL query + scroll position) is restored. Deep link? Go to the listing.
   const goBack = () => (location.state?.fromListing ? navigate(-1) : navigate('/'))
 
-  const buyNow = () => {
-    if (!product) return
-    addToCart(product)
-    notify('Added to cart. Checkout isn’t part of this demo.')
-  }
+  // const buyNow = () => {
+  //   if (!product) return
+  //   addToCart(product)
+  //   notify('Added to cart. Checkout isn’t part of this demo.')
+  // }
 
   // Phones get the native share sheet; desktops copy the link (a predictable result).
   const share = async () => {
@@ -226,7 +261,7 @@ export default function DetailPage() {
                   Add to cart
                 </button>
                 <button
-                  onClick={buyNow}
+                  // onClick={buyNow}
                   disabled={!inStock}
                   className="rounded-md bg-amber-400 px-5 py-2.5 font-bold text-ink transition-colors hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-40"
                 >
@@ -260,6 +295,8 @@ export default function DetailPage() {
             <h2 className="mb-3 text-xl font-extrabold">Reviews</h2>
             <Reviews key={product.id} product={product} />
           </section>
+
+          <RelatedProducts category={product.category} currentId={product.id} />
         </>
       )}
     </main>

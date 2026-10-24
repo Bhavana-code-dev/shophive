@@ -1,14 +1,18 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { CloseIcon } from './Icons'
+import { ClearFiltersButton } from './FilterPanel'
 
 interface Props {
   open: boolean
   onClose: () => void
   children: ReactNode
+  activeCount: number
+  onClear: () => void
+
 }
 
 /** Slide-in drawer from the left. Closes on backdrop click, the X button, or Escape. */
-export function Sidebar({ open, onClose, children }: Props) {
+export function Sidebar({ open, onClose, activeCount, onClear,children }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
@@ -38,17 +42,20 @@ export function Sidebar({ open, onClose, children }: Props) {
       >
         <div className="flex items-center justify-between bg-navy px-4 py-3 text-white">
           <span className="flex items-center gap-2 text-lg font-extrabold">
-            <span aria-hidden="true">🛒</span>
-            ShopHive
+            {/* <span aria-hidden="true">🛒</span> */}
+            Filters
           </span>
-          <button
-            ref={closeRef}
-            onClick={onClose}
-            aria-label="Close filters"
-            className="rounded-md p-1 hover:bg-white/10"
-          >
-            <CloseIcon />
-          </button>
+            <div className="flex items-center gap-1">
+            <ClearFiltersButton count={activeCount} onClear={onClear} />
+            <button
+              ref={closeRef}
+              onClick={onClose}
+              aria-label="Close filters"
+              className="rounded-md p-1 hover:bg-white/10"
+            >
+              <CloseIcon />
+            </button>
+          </div>
         </div>
         <div className="flex-1 overflow-y-auto p-4">{children}</div>
       </aside>

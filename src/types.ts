@@ -33,7 +33,7 @@ export interface Category {
   name: string
 }
 
-export type SortKey = '' | 'price-asc' | 'price-desc' | 'rating'
+export type SortKey = '' | 'price-asc' | 'price-desc' | 'rating' | 'discount'
 
 export interface Filters {
   category: string
